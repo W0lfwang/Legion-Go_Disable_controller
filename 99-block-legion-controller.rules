@@ -1,0 +1,9 @@
+# Block Lenovo Legion Controller
+# /etc/udev/rules.d/
+# sudo udevadm control --reload-rules
+# sudo udevadm trigger
+# use lsusb to find Legion-Controller 1-78 on the list, find the ID
+# The ID it's separated by a :, the first part goes to xxxx
+# the second goes to yyyy
+
+ATTR{idVendor}=="xxxx", ATTR{idProduct}=="xxxx", ATTR{authorized}="0"
