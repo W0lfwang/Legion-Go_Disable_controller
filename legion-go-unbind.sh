@@ -30,7 +30,6 @@ fi
 
 # Disable (unbind) logic
 if [[ "$action_str" == "unbind" ]]; then
-  : > "$saved_list"  # Empty the file before writing
 
   for dev in "$usb_base"/*; do
     [[ -f "$dev/product" ]] || continue
@@ -38,11 +37,17 @@ if [[ "$action_str" == "unbind" ]]; then
     [[ "$prod_name" == "$controller_name" ]] || continue
 
     dev_name=$(basename "$dev")
-    echo "Found controller: $dev_name"
 
     # Find all usbhid interfaces for the controller
     mapfile -t interfaces < <(ls /sys/bus/usb/drivers/usbhid/ | grep "^$dev_name:")
-    
+
+    if [[ "${#interfaces[@]}" -eq 0 ]]; then
+      echo "Nothing found. Nothing to unbind."
+      exit 1
+    fi
+
+    echo "Found controller: $dev_name"
+    : > "$saved_list"  # Empty the file before writing
     for iface in "${interfaces[@]}"; do
       # echo "$iface" > "/sys/bus/usb/drivers/usbhid/unbind
       echo "$iface" | sudo tee "/sys/bus/usb/drivers/usbhid/unbind" > /dev/null
@@ -54,7 +59,7 @@ if [[ "$action_str" == "unbind" ]]; then
 # Enable (bind) logic
 elif [[ "$action_str" == "bind" ]]; then
   if [[ ! -f "$saved_list" ]]; then
-    echo "No saved interface list found. Nothing to bind."
+    echo "No saved interface list found. Nothing to bind."  
     exit 1
   fi
 
