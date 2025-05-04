@@ -1,0 +1,12 @@
+[Unit]
+Description=Legion Controller USB Interface Manager
+After=multi-user.target
+ConditionPathExists=/var/usrlocal/bin/legion-go-unbind.sh
+
+[Service]
+Type=oneshot
+ExecStart=/var/usrlocal/bin/legion-go-unbind.sh 0
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

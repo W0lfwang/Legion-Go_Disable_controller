@@ -30,7 +30,6 @@ fi
 
 # Disable (unbind) logic
 if [[ "$action_str" == "unbind" ]]; then
-
   for dev in "$usb_base"/*; do
     [[ -f "$dev/product" ]] || continue
     prod_name=$(< "$dev/product")
@@ -49,8 +48,7 @@ if [[ "$action_str" == "unbind" ]]; then
     echo "Found controller: $dev_name"
     : > "$saved_list"  # Empty the file before writing
     for iface in "${interfaces[@]}"; do
-      # echo "$iface" > "/sys/bus/usb/drivers/usbhid/unbind
-      echo "$iface" | sudo tee "/sys/bus/usb/drivers/usbhid/unbind" > /dev/null
+      echo "$iface" > "/sys/bus/usb/drivers/usbhid/unbind"
       echo "$iface" >> "$saved_list"
       echo "Unbound: $iface"
     done
@@ -65,8 +63,7 @@ elif [[ "$action_str" == "bind" ]]; then
 
   mapfile -t interfaces < "$saved_list"
   for iface in "${interfaces[@]}"; do
-  # echo "$iface" > "/sys/bus/usb/drivers/usbhid/bind
-    echo "$iface" | sudo tee "/sys/bus/usb/drivers/usbhid/bind" > /dev/null
+    echo "$iface" > "/sys/bus/usb/drivers/usbhid/bind"
     echo "Rebound: $iface"
   done
 
